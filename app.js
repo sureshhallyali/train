@@ -13,8 +13,6 @@ const userModel = require("./controllers/userControllers");
 app.use("/user",require('./routes/user'));
 // app.use("/auth", require("./routes/auth"));
 
-// Parse json bodies
-
 dotenv.config({ path: "./.env" });
 
 const db = mysql.createConnection({
