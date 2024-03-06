@@ -1,8 +1,10 @@
 const mysql = require("mysql");
-const bcrypt = require( "bcryptjs" );
-const jwt = require('jsonwebtoken');
-const express = require('express');
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const express = require("express");
 const dotenv = require("dotenv");
+
+const secreteKey = "secreteKey";
 
 const app = express();
 app.use(express.json());
@@ -23,7 +25,7 @@ const signup = async (req, res) => {
     [mobile],
     async (error, result) => {
       if (error) {
-        console.log(error); 
+        console.log(error);
       }
 
       if (result.length > 0) {
@@ -40,9 +42,13 @@ const signup = async (req, res) => {
         (error, result) => {
           if (error) {
             console.log(error);
-            return res.status(500).json({ message: "An error occurred while registering user" });
+            return res
+              .status(500)
+              .json({ message: "An error occurred while registering user" });
           }
-          return res.status(201).json({ message: "User registered successfully" });
+          return res
+            .status(201)
+            .json({ message: "User registered successfully" });
         }
       );
     }
@@ -52,7 +58,9 @@ const signup = async (req, res) => {
 const signin = async (req, res) => {
   const { mobile, password } = req.body;
 
-  db.query("SELECT mobile, password FROM users WHERE mobile =?", [mobile],
+  db.query(
+    "SELECT mobile, password FROM users WHERE mobile =?",
+    [mobile],
     async (error, result) => {
       if (error) {
         console.log(error);
@@ -63,14 +71,20 @@ const signin = async (req, res) => {
       }
 
       const existingUser = result[0];
-      const matchPassword = await bcrypt.compare(password, existingUser.password);
+      const matchPassword = await bcrypt.compare(
+        password,
+        existingUser.password
+      );
 
       if (!matchPassword) {
-        return res.status(401).json({ "message": "Invalid credentials" });
+        return res.status(401).json({ message: "Invalid credentials" });
       }
 
-      return res.status(201).json({ message: "Logged In successfully" });
-    });
+      // create a token
+      const token = jwt.sign({ mobile: existingUser.mobile }, secreteKey);
+      return res.status(201).json({user:existingUser, token:token, message: "Logged In successfully" });
+    }
+  );
 };
 
 module.exports = { signup, signin };
