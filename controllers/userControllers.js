@@ -29,9 +29,9 @@ const signup = async (req, res) => {
       }
 
       if (result.length > 0) {
-        return res.status(404).json({ message: "User already exists" });
+        return res.status(409).json({ message: "User already exists" });
       } else if (password !== confirmPass) {
-        return res.status(404).json({ message: "Passwords don't match" });
+        return res.status(401).json({ message: "Passwords don't match" });
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
