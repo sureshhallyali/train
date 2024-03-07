@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const express = require("express");
 const dotenv = require("dotenv");
 
-const secreteKey = "secreteKey";
+const secreteKey = "secretKey";
 
 const app = express();
 app.use(express.json());
@@ -58,6 +58,8 @@ const signup = async (req, res) => {
 
 
 
+
+//Sign IN API
 const signin = async (req, res) => {
   const { mobile, password } = req.body;
 
@@ -85,9 +87,100 @@ const signin = async (req, res) => {
 
       // create a token
       const token = jwt.sign({ mobile: existingUser.mobile }, secreteKey);
+  
+      db.query("UPDATE users SET token= ? WHERE mobile = ? ", [token, mobile]);
+
+      //return the user with token
       return res.status(201).json({user:existingUser, token:token, message: "Logged In successfully" });
     }
   );
 };
 
-module.exports = { signup, signin };
+
+
+
+// jwt token verification & getting data fromat for user
+// const user = async (req, res) =>{
+//   const token=req.header("authorization");
+
+//   if(!token){
+//     return res
+//     .status(401)
+//     .json({message: "Unauthorized HTTP, Token not provided"});
+//   }
+
+// console.log(" Try block started ------------------------------------------------------------------------------>");
+
+//   try {
+//     //Verify the token
+//   const jwtToken = token.replace("Bearer ", "").trim();  // Fix Token Parsing  
+
+//     const decode = jwt.verify(jwtToken, secreteKey);
+//     console.log(decoded);
+
+//     console.log("one line after The Try block  2------------------------------------------------------------------------------>");
+//     // Retrieve the user from the database using mobile number in the secod token
+
+//     db.query(
+//       "SELECT * FROM users WHERE mobile  =?",
+//       [decoded.mobile],
+//       (err, results) => {
+//           if(err){
+//             console.log(err);
+//             return res.status(500).json({message:"Internal server error"});
+//           }
+
+//           if(results.length !== 1){
+//             return res.status(400).json({message:"The user does not exist."});
+//           }
+
+//             const user = results[0];
+            
+//             console.log(`This is my user :--> ${user}`);
+//             // Check if the token from the database matches the token from the frontend
+
+//             if(user.token !== token){
+//               return res.status(401).json({message:"Unauthorized, Token Mismatch"});
+//             }
+
+//              //   t oken is valid and matches the token stored in the database
+//              return res.status(200).json({message:"Token Is Valid, You can access the data"}) ;
+//       }
+//     ); 
+//   }catch (error) {
+//     console.log(error);
+//     return res.status(401).json({message:"Unauthorised, Invalid Token   (IN CATCH BLOCK)"})
+//   }
+// };
+
+const user = async (req, res) => {
+  const token = req.header("authorization").replace("Bearer ", "");
+
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized. Token not provided." });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await db.query(
+      "SELECT * FROM users WHERE mobile = ?",
+      [decoded.mobile]
+    );
+
+    if (user.length !== 1) {
+      return res.status(400).json({ message: "Invalid token." });
+    }
+
+    if (user[0].token !== token) {
+      return res.status(401).json({ message: "Unauthorized. Token mismatch." });
+    }
+
+    res.status(200).json({ message: "Token is valid.", user: user[0] });
+  } catch (error) {
+    res.status(401).json({ message: "Unauthorized. Invalid token." });
+  }
+};
+
+
+module.exports = { signup, signin, user};
