@@ -55,10 +55,6 @@ const signup = async (req, res) => {
   );
 };
 
-
-
-
-
 //Sign IN API
 const signin = async (req, res) => {
   const { mobile, password } = req.body;
@@ -97,88 +93,58 @@ const signin = async (req, res) => {
 };
 
 
-
-
 // jwt token verification & getting data fromat for user
-// const user = async (req, res) =>{
-//   const token=req.header("authorization");
+const user = async (req, res) =>{
+  const token=req.header("authorization");
 
-//   if(!token){
-//     return res
-//     .status(401)
-//     .json({message: "Unauthorized HTTP, Token not provided"});
-//   }
-
-// console.log(" Try block started ------------------------------------------------------------------------------>");
-
-//   try {
-//     //Verify the token
-//   const jwtToken = token.replace("Bearer ", "").trim();  // Fix Token Parsing  
-
-//     const decode = jwt.verify(jwtToken, secreteKey);
-//     console.log(decoded);
-
-//     console.log("one line after The Try block  2------------------------------------------------------------------------------>");
-//     // Retrieve the user from the database using mobile number in the secod token
-
-//     db.query(
-//       "SELECT * FROM users WHERE mobile  =?",
-//       [decoded.mobile],
-//       (err, results) => {
-//           if(err){
-//             console.log(err);
-//             return res.status(500).json({message:"Internal server error"});
-//           }
-
-//           if(results.length !== 1){
-//             return res.status(400).json({message:"The user does not exist."});
-//           }
-
-//             const user = results[0];
-            
-//             console.log(`This is my user :--> ${user}`);
-//             // Check if the token from the database matches the token from the frontend
-
-//             if(user.token !== token){
-//               return res.status(401).json({message:"Unauthorized, Token Mismatch"});
-//             }
-
-//              //   t oken is valid and matches the token stored in the database
-//              return res.status(200).json({message:"Token Is Valid, You can access the data"}) ;
-//       }
-//     ); 
-//   }catch (error) {
-//     console.log(error);
-//     return res.status(401).json({message:"Unauthorised, Invalid Token   (IN CATCH BLOCK)"})
-//   }
-// };
-
-const user = async (req, res) => {
-  const token = req.header("authorization").replace("Bearer ", "");
-
-  if (!token) {
-    return res.status(401).json({ message: "Unauthorized. Token not provided." });
+  if(!token){
+    return res
+    .status(401)
+    .json({message: "Unauthorized HTTP, Token not provided"});
   }
 
+console.log(" Try block started ------------------------------------------------------------------------------>");
+
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    //Verify the token
+  const jwtToken = token.replace("Bearer ", "").trim();  // Fix Token Parsing  
+    console.log(jwtToken);
+    
+    const decode = jwt.verify(jwtToken, secreteKey);
+    console.log(decode);
 
-    const user = await db.query(
-      "SELECT * FROM users WHERE mobile = ?",
-      [decoded.mobile]
-    );
+    console.log("one line after The Try block  2------------------------------------------------------------------------------>");
+    // Retrieve the user from the database using mobile number in the secod token
 
-    if (user.length !== 1) {
-      return res.status(400).json({ message: "Invalid token." });
-    }
+    db.query(
+      "SELECT * FROM users WHERE mobile  =?",
+      [decode.mobile],
+      (err, results) => {
+          if(err){
+            console.log(err);
+            return res.status(500).json({message:"Internal server error"});
+          }
 
-    if (user[0].token !== token) {
-      return res.status(401).json({ message: "Unauthorized. Token mismatch." });
-    }
+          if(results.length !== 1){
+            return res.status(400).json({message:"The user does not exist."});
+          }
 
-    res.status(200).json({ message: "Token is valid.", user: user[0] });
-  } catch (error) {
-    res.status(401).json({ message: "Unauthorized. Invalid token." });
+            const user = results[0];
+            
+            console.log(`This is my user :--> ${user}`);
+            // Check if the token from the database matches the token from the frontend
+
+            if(user.token !== token){
+              return res.status(401).json({message:"Unauthorized, Token Mismatch"});
+            }
+
+             //   t oken is valid and matches the token stored in the database
+             return res.status(200).json({message:"Token Is Valid, You can access the data"}) ;
+      }
+    ); 
+  }catch (error) {
+    console.log(error);
+    return res.status(401).json({message:"Unauthorised, Invalid Token   (IN CATCH BLOCK)"})
   }
 };
 
