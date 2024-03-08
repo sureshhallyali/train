@@ -83,70 +83,81 @@ const signin = async (req, res) => {
 
       // create a token
       const token = jwt.sign({ mobile: existingUser.mobile }, secreteKey);
-  
+
       db.query("UPDATE users SET token= ? WHERE mobile = ? ", [token, mobile]);
 
       //return the user with token
-      return res.status(201).json({user:existingUser, token:token, message: "Logged In successfully" });
+      return res.status(201).json({
+        user: existingUser,
+        token: token,
+        message: "Logged In successfully",
+      });
     }
   );
 };
 
-
 // jwt token verification & getting data fromat for user
-const user = async (req, res) =>{
-  const token=req.header("authorization");
+const user = async (req, res) => {
+  const token = req.header("authorization");
 
-  if(!token){
+  if (!token) {
     return res
-    .status(401)
-    .json({message: "Unauthorized HTTP, Token not provided"});
+      .status(401)
+      .json({ message: "Unauthorized HTTP, Token not provided" });
   }
-
-console.log(" Try block started ------------------------------------------------------------------------------>");
 
   try {
     //Verify the token
-  const jwtToken = token.replace("Bearer ", "").trim();  // Fix Token Parsing  
-    console.log(jwtToken);
-    
+    const jwtToken = token.replace("Bearer ", "").trim(); // Fix Token Parsing
+
     const decode = jwt.verify(jwtToken, secreteKey);
-    console.log(decode);
 
-    console.log("one line after The Try block  2------------------------------------------------------------------------------>");
     // Retrieve the user from the database using mobile number in the secod token
-
     db.query(
       "SELECT * FROM users WHERE mobile  =?",
       [decode.mobile],
       (err, results) => {
-          if(err){
+        if (err) {
+          console.log(err);
+          return res.status(500).json({ message: "Internal server error" });
+        }
+
+        if (results.length !== 1) {
+          return res.status(400).json({ message: "The user does not exist." });
+        }
+
+        const user = results[0];
+        // Check if the token from the database matches the token from the frontend
+
+        if (user.token !== jwtToken) {
+          return res
+            .status(401)
+            .json({ message: "Unauthorized, Token Mismatch" });
+        }
+
+        db.query("SELECT * FROM carInfo", (err, carResults) => {
+          if (err) {
             console.log(err);
-            return res.status(500).json({message:"Internal server error"});
+            return res
+              .status(500)
+              .json({ message: "Error retrieving carInfo data" });
           }
 
-          if(results.length !== 1){
-            return res.status(400).json({message:"The user does not exist."});
-          }
-
-            const user = results[0];
-            
-            console.log(`This is my user :--> ${user}`);
-            // Check if the token from the database matches the token from the frontend
-
-            if(user.token !== token){
-              return res.status(401).json({message:"Unauthorized, Token Mismatch"});
-            }
-
-             //   t oken is valid and matches the token stored in the database
-             return res.status(200).json({message:"Token Is Valid, You can access the data"}) ;
+          const carData = JSON.parse(JSON.stringify(carResults));
+          // Send carInfo data to the frontend
+          return res.status(200).json({
+            message: "Token Is Valid, You can access the data",
+            carInfo: carData,
+          });
+        });
       }
-    ); 
-  }catch (error) {
+    );
+  } catch (error) {
     console.log(error);
-    return res.status(401).json({message:"Unauthorised, Invalid Token   (IN CATCH BLOCK)"})
+    return res
+      .status(401)
+      .json({ message: "Unauthorised, Invalid Token   (IN CATCH BLOCK)" });
   }
 };
 
-
-module.exports = { signup, signin, user};
+module.exports = { signup, signin, user };
