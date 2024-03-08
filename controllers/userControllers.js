@@ -160,4 +160,38 @@ const user = async (req, res) => {
   }
 };
 
-module.exports = { signup, signin, user };
+
+
+const forgotPass = async (req, res) => {
+  const { mobile, password, confirmPass } = req.body;
+try {
+  
+  db.query(
+    "SELECT * FROM users WHERE mobile=?",
+    [mobile],
+    async (err, result)=>{
+      if (err) {
+        console.log(err);
+        return res.status(500)
+                  .json({message:"Server Error!"});
+      }
+      if (result.length!=1) {
+          return res.status(400)
+                     .json({message : "Invalid Mobile Number."}) ;
+      }else if (password !== confirmPass){
+        return res.status(400)
+                   .json({message : "Password and Confirm Password does not match."}) ;
+      }
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+      db.query("UPDATE users SET password = ? WHERE mobile = ? ", [hashedPassword, mobile]);
+        return res.status(200).json({message : "Password Updated Succefully" })
+    }
+  )
+
+} catch (error) {
+  console.log("Error In Catch :"+ error);
+}
+};
+
+module.exports = { signup, signin, user, forgotPass };
