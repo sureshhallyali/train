@@ -5,13 +5,12 @@ const dotenv = require("dotenv");
 const app = express();
 app.use(express.json());
 
-const userRoute = require("./routes/user");
-const userModel = require("./controllers/userControllers");
+const userRoute = require("./assets/routes/user");
+const userModel = require("./assets/controllers/userControllers");
 
 
 
-app.use("/user",require('./routes/user'));
-// app.use("/auth", require("./routes/auth"));
+app.use("/user",require('./assets/routes/user'));
 
 dotenv.config({ path: "./.env" });
 
