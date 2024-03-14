@@ -1,6 +1,6 @@
 const mysql = require("mysql");
 const mysql2 = require("mysql2");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const express = require("express");
 const dotenv = require("dotenv");
@@ -14,7 +14,7 @@ const db = mysql.createConnection({
   host: process.env.DATABASE_HOST,
   user: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASSWORD,
-  database: process.env.DATABASE,
+  database: process.env.DATABASE
 });
 
 const signup = async (req, res) => {
