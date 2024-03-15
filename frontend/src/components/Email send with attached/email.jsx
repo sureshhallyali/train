@@ -7,7 +7,7 @@ const EmailForm = () => {
         to: '',
         subject: '',
         text: '',
-        file: null
+        files: []
     });
 
     const handleChange = (e) => {
@@ -20,7 +20,7 @@ const EmailForm = () => {
     const handleFileChange = (e) => {
         setFormData({
             ...formData,
-            file: e.target.files[0]
+            files: e.target.files
         });
     };
 
@@ -29,10 +29,14 @@ const EmailForm = () => {
         
         const formDataToSend = new FormData();
         formDataToSend.append('from', formData.from);
-        formDataToSend.append('to', formData.to);
-        formDataToSend.append('subject', formData.subject);
+        // Splitting the 'to' field into an array of email addresses
+        formDataToSend.append('to', formData.to.split(',').map(email => email.trim()));      //here allow multiple emails
+        formDataToSend.append('subject', formData.subject); 
         formDataToSend.append('text', formData.text);
-        formDataToSend.append('file', formData.file);
+
+        for (let i = 0; i < formData.files.length; i++) {
+            formDataToSend.append('files', formData.files[i]);
+        }
 
         try {
             const response = await fetch('http://localhost:3000/send-email', {
@@ -61,7 +65,9 @@ const EmailForm = () => {
     
                 <div className="form-group">
                     <label htmlFor="to">To:</label>
-                    <input type="email" id="to" name="to" value={formData.to} onChange={handleChange} required />
+                    <input type="text" id="to" name="to" value={formData.to} onChange={handleChange} required />
+                    {/* Accepts comma-separated values */}
+                    <small>Separate multiple email addresses with commas</small>
                 </div>
     
                 <div className="form-group">
@@ -75,8 +81,15 @@ const EmailForm = () => {
                 </div>
     
                 <div className="form-group">
-                    <label htmlFor="file">Attachment:</label>
-                    <input type="file" id="file" name="file" onChange={handleFileChange} />
+                    <label htmlFor="files">Attachments:</label>
+                    <input type="file" id="files" name="files" multiple onChange={handleFileChange} />
+                    {formData.files.length > 0 && (
+                        <ul>
+                            {Array.from(formData.files).map((file, index) => (
+                                <li key={index}>{file.name}</li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
     
                 <div className="form-group">
@@ -88,3 +101,4 @@ const EmailForm = () => {
 };
 
 export default EmailForm;
+
