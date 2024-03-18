@@ -8,7 +8,7 @@ router.post("/signin", signin);
 
 router.get("/user1", user);
 
-router.post("/forgotPass", forgotPass);
+router.put("/forgotPass", forgotPass);
 
 router.get("/generate_excel", generate_excel);
 
