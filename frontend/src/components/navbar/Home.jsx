@@ -1,20 +1,19 @@
 import React, { useState } from "react";
 import Navbar from "./navbar";
 import EmailForm from "../Email send with attached/email";
-
+import ImageComponent from "../Image downloader/image";
 
 const Home = () => {
   const [showEmailForm, setShowEmailForm] = useState(false);
-
+  const [showImageDownloader, setShowImageDownloader] = useState(false); 
   const toggleEmailForm = () => {
     setShowEmailForm(!showEmailForm);
   };
-  const [showimagedownloader, setShowimagedownloader] = useState(false);
 
-  const toggleimagedownloader = () => {
-    setShowimagedownloader(!showimagedownloader);
+  const toggleImageDownloader = () => {
+    setShowImageDownloader(!showImageDownloader);
   };
-  
+
   return (
     <>
       <Navbar />
@@ -26,10 +25,19 @@ const Home = () => {
         <view> 
           <br />
         </view>
+
+        <button onClick={toggleImageDownloader}>Open Image Downloader</button>
+        {showImageDownloader && <ImageComponent />} {/* Render ImageComponent when showImageDownloader is true */}
+        <view>
+          <br />
+        </view>
+
       </section>
     </>
   );
 };
+
+
 
 const About = () => {
   return (

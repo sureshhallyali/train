@@ -6,6 +6,9 @@ const app = express();
 const path = require('path');
 const PORT = process.env.PORT || 5000;
 
+const https = require('https');
+const fs = require('fs');
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/');
@@ -62,3 +65,51 @@ app.post('/send-email', upload.array('files', 10), async (req, res) => {
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 module.exports = app; 
+
+
+
+
+
+
+//Image Downloader
+
+const { v4: uuidv4 } = require('uuid');
+
+function downloadImage(url, folder, fileName) {
+    const uniqueFileName = uuidv4() + path.extname(fileName); // Generate unique filename
+    const imagePath = path.join(__dirname, folder, uniqueFileName);
+    return new Promise((resolve, reject) => {
+        https.get(url, function(response) {
+            if (response.statusCode === 200) {
+                const fileStream = fs.createWriteStream(imagePath);
+                response.pipe(fileStream);
+                fileStream.on('finish', function() {
+                    console.log('Image downloaded successfully.');
+                    fileStream.close();
+                    resolve(uniqueFileName); // Resolve with the unique filename
+                });
+            } else {
+                console.error('Failed to download image. Status Code:', response.statusCode);
+                reject(new Error('Failed to download image'));
+            }
+        }).on('error', function(err) {
+            console.error('Error downloading image:', err);
+            reject(err);
+        });
+    });
+}
+
+app.post('/download', async (req, res) => {
+    const imageUrl = req.body.imageUrl;
+    const folderName = './downloads';
+    const fileName = 'image.jpg'; // You can pass the desired filename from the client-side if needed
+
+    try {
+        const uniqueFileName = await downloadImage(imageUrl, folderName, fileName);
+        res.send(`Image download completed. Saved as: ${uniqueFileName}`);
+    } catch (error) {
+        console.error('Error downloading image:', error);
+        res.status(500).send('Error downloading image.');
+    }
+});
+
