@@ -2,16 +2,21 @@ import React, { useState } from "react";
 import Navbar from "./navbar";
 import EmailForm from "../Email send with attached/email";
 import ImageComponent from "../Image downloader/image";
+import GeneratePDF from "../Generate PDF/pdf"; // Corrected import name
 
 const Home = () => {
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [showImageDownloader, setShowImageDownloader] = useState(false); 
+  const [showGenerate, setShowGenerate] = useState(false); // Corrected state name
   const toggleEmailForm = () => {
     setShowEmailForm(!showEmailForm);
   };
 
   const toggleImageDownloader = () => {
     setShowImageDownloader(!showImageDownloader);
+  };
+  const toggleGenerate = () => {
+    setShowGenerate(!showGenerate); // Corrected function name
   };
 
   return (
@@ -27,7 +32,12 @@ const Home = () => {
         </view>
 
         <button onClick={toggleImageDownloader}>Open Image Downloader</button>
-        {showImageDownloader && <ImageComponent />} {/* Render ImageComponent when showImageDownloader is true */}
+        {showImageDownloader && <ImageComponent />} 
+        <view>
+          <br />
+        </view>
+        <button onClick={toggleGenerate}>Generate PDF</button>
+        {showGenerate && <GeneratePDF />} {/* Corrected component name */}
         <view>
           <br />
         </view>
@@ -37,70 +47,4 @@ const Home = () => {
   );
 };
 
-
-
-const About = () => {
-  return (
-    <>
-      <Navbar />
-      <section className="hero-section">
-        <p>Welcome to </p>
-        <h1>ADIS TECHNOLOGY About Page</h1>
-      </section>
-    </>
-  );
-};
-
-const Service = () => {
-  return (
-    <>
-      <Navbar />
-      <section className="hero-section">
-        <p>Welcome to </p>
-        <h1>ADIS TECHNOLOGY Service Page</h1>
-      </section>
-    </>
-  );
-};
-
-const Contact = () => {
-  return (
-    <>
-      <Navbar />
-      <section className="hero-section">
-        <p>Welcome to </p>
-        <h1>ADIS TECHNOLOGY Contact Page</h1>
-      </section>
-    </>
-  );
-};
-
-const App = () => {
-  return (
-    <Switch>
-      <Route exact path="/">
-        <Home />
-      </Route>
-
-      <Route path="/about">
-        <About />
-      </Route>
-
-      <Route path="/service">
-        <Service />
-      </Route>
-
-      <Route path="/contact">
-        <Contact />
-      </Route>
-    </Switch>
-  );
-};
-
 export default Home;
-
-
-
-
-
-

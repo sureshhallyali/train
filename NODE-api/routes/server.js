@@ -71,22 +71,24 @@ module.exports = app;
 
 
 
-//Image Downloader
+//image.jsx
+const bodyParser = require('body-parser');
+const { v4: uuidv4 } = require('uuid'); // Import uuid module
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-const { v4: uuidv4 } = require('uuid');
-
-function downloadImage(url, folder, fileName) {
-    const uniqueFileName = uuidv4() + path.extname(fileName); // Generate unique filename
-    const imagePath = path.join(__dirname, folder, uniqueFileName);
+function downloadImage(url, filename) {
     return new Promise((resolve, reject) => {
         https.get(url, function(response) {
             if (response.statusCode === 200) {
+                const folderPath = path.join(__dirname, 'images');
+                const imagePath = path.join(folderPath, filename); // Use filename here
                 const fileStream = fs.createWriteStream(imagePath);
                 response.pipe(fileStream);
                 fileStream.on('finish', function() {
                     console.log('Image downloaded successfully.');
                     fileStream.close();
-                    resolve(uniqueFileName); // Resolve with the unique filename
+                    resolve();
                 });
             } else {
                 console.error('Failed to download image. Status Code:', response.statusCode);
@@ -100,16 +102,69 @@ function downloadImage(url, folder, fileName) {
 }
 
 app.post('/download', async (req, res) => {
-    const imageUrl = req.body.imageUrl;
-    const folderName = './downloads';
-    const fileName = 'image.jpg'; // You can pass the desired filename from the client-side if needed
-
+    const imageUrl = req.body.imageUrl; 
+    const filename = uuidv4() + '.jpg'; 
     try {
-        const uniqueFileName = await downloadImage(imageUrl, folderName, fileName);
-        res.send(`Image download completed. Saved as: ${uniqueFileName}`);
+        const folderPath = path.join(__dirname, 'images');
+        if (!fs.existsSync(folderPath)) {
+            fs.mkdirSync(folderPath);
+        }
+
+        await downloadImage(imageUrl, filename);
+        res.send('Image download completed.'); 
     } catch (error) {
-        console.error('Error downloading image:', error);
         res.status(500).send('Error downloading image.');
     }
 });
 
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+
+
+
+
+
+
+//Generate PDF
+const puppeteer = require('puppeteer');
+app.use(express.static(path.join(__dirname, 'public')));
+
+const sampleData = {
+    title: "Sample PDF Document",
+    content: "This is a sample PDF document generated."
+};
+let pdfGenerationInProgress = false; 
+app.get('/generate-pdf', async (req, res) => {
+    try {
+
+        if (pdfGenerationInProgress) {
+            res.status(403).send('PDF generation is already in progress. Please try again later.');
+            return;
+        }
+
+        pdfGenerationInProgress = true; 
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        
+        await page.setContent(`
+            <h1>${sampleData.title}</h1>
+            <p>${sampleData.content}</p>
+        `);
+
+        const pdf = await page.pdf({ format: 'A4' });
+        await browser.close();
+        
+        pdfGenerationInProgress = false; 
+        
+        res.setHeader('Content-Disposition', 'attachment; filename="sample.pdf"'); 
+        res.contentType("application/pdf");
+        res.send(pdf);
+    } catch (err) {
+        console.error('Error generating PDF:', err);
+        pdfGenerationInProgress = false; 
+        res.status(500).send('Error generating PDF');
+    }
+});

@@ -29,8 +29,7 @@ const EmailForm = () => {
         
         const formDataToSend = new FormData();
         formDataToSend.append('from', formData.from);
-        // Splitting the 'to' field into an array of email addresses
-        formDataToSend.append('to', formData.to.split(',').map(email => email.trim()));      //here allow multiple emails
+        formDataToSend.append('to', formData.to.split(',').map(email => email.trim()));      
         formDataToSend.append('subject', formData.subject); 
         formDataToSend.append('text', formData.text);
 
