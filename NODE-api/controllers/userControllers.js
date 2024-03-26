@@ -1,6 +1,6 @@
 const mysql = require("mysql");
 const mysql2 = require("mysql2");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const express = require("express");
 const dotenv = require("dotenv");

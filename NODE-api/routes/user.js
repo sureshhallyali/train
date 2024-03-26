@@ -6,6 +6,6 @@ router.post("/signup", signup);
 
 router.post("/signin", signin);
 
-outer.get("/generate_excel", generate_excel);
+router.get("/generate_excel", generate_excel);
 
 module.exports = router; //exporting the module so it can be used in other files
