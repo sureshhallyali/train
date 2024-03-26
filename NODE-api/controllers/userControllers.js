@@ -144,6 +144,6 @@ const generate_excel = (req, res) => {
   });
 };
 
-module.exports = { signup, signin };
+module.exports = { signup, signin, generate_excel };
 
 
