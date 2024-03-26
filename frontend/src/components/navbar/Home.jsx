@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import Navbar from "./navbar";
 import EmailForm from "../Email send with attached/email";
 import ImageComponent from "../Image downloader/image";
-import GeneratePDF from "../Generate PDF/pdf"; // Corrected import name
+//import GeneratePDF from "../Generate PDF/pdf"; 
 
 const Home = () => {
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [showImageDownloader, setShowImageDownloader] = useState(false); 
-  const [showGenerate, setShowGenerate] = useState(false); // Corrected state name
+  const [showGenerate, setShowGenerate] = useState(false); 
   const toggleEmailForm = () => {
     setShowEmailForm(!showEmailForm);
   };
@@ -33,11 +33,11 @@ const Home = () => {
 
         <button onClick={toggleImageDownloader}>Open Image Downloader</button>
         {showImageDownloader && <ImageComponent />} 
-        <view>
+        {/* <view>
           <br />
         </view>
         <button onClick={toggleGenerate}>Generate PDF</button>
-        {showGenerate && <GeneratePDF />}
+        {showGenerate && <GeneratePDF />} */}
         <view>
           <br />
         </view>
