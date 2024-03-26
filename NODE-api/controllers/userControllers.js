@@ -95,6 +95,55 @@ const signin = async (req, res) => {
   );
 };
 
+
+const generate_excel = (req, res) => {
+  const carInfo = req.params.carInfo;
+
+   const query = `SELECT * FROM carInfo`;
+
+   db.query(query, (err, rows) => {
+    if (err) {
+      console.error("Error Executing query:", err);
+      res.status(500).send("Error fetching data from database");
+      return;
+    }
+    //Create workbook and worksheet
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("carInfo");
+
+    // Add data rows to worksheet
+    const columns = ['ID', 'CarModel', 'Company', 'EnginePower', 'Country', 'PriceINR']
+    rows.forEach((row) => {
+      const rowData = [];
+      columns.forEach((column) => {
+        rowData.push(row[column]);
+      });
+      worksheet.addRow(rowData);
+    });
+
+    // Set response headers
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${carInfo}.xlsx"`
+    );
+
+    //Write the workbook to the response
+    workbook.xlsx
+      .write(res)
+      .then(() => {
+        res.end();
+      })
+      .catch((err) => {
+        console.log("Error", err);
+        res.status(500).send("Error generating Excel file");
+      });
+  });
+};
+
 module.exports = { signup, signin };
 
 
