@@ -52,7 +52,7 @@ app.post('/send-email', upload.array('files', 10), async (req, res) => {
         text: text,
         attachments: [
             {
-                filename: 'sample.pdf', // Change filename as needed
+                filename: 'sample.pdf', 
                 content: pdfBuffer
             },
             ...files.map(file => ({
