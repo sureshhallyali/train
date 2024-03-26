@@ -16,7 +16,7 @@ const Home = () => {
     setShowImageDownloader(!showImageDownloader);
   };
   const toggleGenerate = () => {
-    setShowGenerate(!showGenerate); // Corrected function name
+    setShowGenerate(!showGenerate); 
   };
 
   return (
@@ -37,7 +37,7 @@ const Home = () => {
           <br />
         </view>
         <button onClick={toggleGenerate}>Generate PDF</button>
-        {showGenerate && <GeneratePDF />} {/* Corrected component name */}
+        {showGenerate && <GeneratePDF />}
         <view>
           <br />
         </view>

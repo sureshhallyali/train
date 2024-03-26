@@ -73,7 +73,7 @@ module.exports = app;
 
 //image.jsx
 const bodyParser = require('body-parser');
-const { v4: uuidv4 } = require('uuid'); // Import uuid module
+const { v4: uuidv4 } = require('uuid'); 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -82,7 +82,7 @@ function downloadImage(url, filename) {
         https.get(url, function(response) {
             if (response.statusCode === 200) {
                 const folderPath = path.join(__dirname, 'images');
-                const imagePath = path.join(folderPath, filename); // Use filename here
+                const imagePath = path.join(folderPath, filename); 
                 const fileStream = fs.createWriteStream(imagePath);
                 response.pipe(fileStream);
                 fileStream.on('finish', function() {
@@ -133,8 +133,8 @@ const puppeteer = require('puppeteer');
 app.use(express.static(path.join(__dirname, 'public')));
 
 const sampleData = {
-    title: "Sample PDF Document",
-    content: "This is a sample PDF document generated."
+    title: "Sample PDF",
+    content: "This is a sample PDF generated."
 };
 let pdfGenerationInProgress = false; 
 app.get('/generate-pdf', async (req, res) => {
