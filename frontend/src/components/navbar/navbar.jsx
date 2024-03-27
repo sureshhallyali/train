@@ -1,5 +1,7 @@
+//navbar.jsx
+
 import React, { useState } from "react";
-import "./navbar.css";
+import "./navbar.css"; // Import navbar CSS file
 import {
   FaFacebookSquare,
   FaInstagramSquare,
@@ -32,13 +34,13 @@ const Navbar = () => {
               <NavLink to="/">Home</NavLink>
             </li>
             <li>
-              <NavLink to="/about">about</NavLink>
+              <NavLink to="/about">About</NavLink>
             </li>
             <li>
-              <NavLink to="/service">services</NavLink>
+              <NavLink to="/service">Services</NavLink>
             </li>
             <li>
-              <NavLink to="/contact">contact</NavLink>
+              <NavLink to="/contact">Contact</NavLink>
             </li>
           </ul>
         </div>
@@ -69,7 +71,7 @@ const Navbar = () => {
             </li>
           </ul>
 
-          {/* hamburget menu start  */}
+          {/* hamburger menu start */}
           <div className="hamburger-menu">
             <a href="#" onClick={() => setShowMediaIcons(!showMediaIcons)}>
               <GiHamburgerMenu />
@@ -80,5 +82,4 @@ const Navbar = () => {
     </>
   );
 };
-
 export default Navbar;
