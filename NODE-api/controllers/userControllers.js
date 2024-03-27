@@ -9,13 +9,14 @@ const app = express();
 app.use(express.json());
 
 dotenv.config({ path: "./.env" });
+const db = require("../db");
 
-const db = mysql.createConnection({
-  host: process.env.DATABASE_HOST,
-  user: process.env.DATABASE_USER,
-  password: process.env.DATABASE_PASSWORD,
-  database: process.env.DATABASE,
-});
+// const db = mysql.createConnection({
+//   host: process.env.DATABASE_HOST,
+//   user: process.env.DATABASE_USER,
+//   password: process.env.DATABASE_PASSWORD,
+//   database: process.env.DATABASE,
+// });
 
 const signup = async (req, res) => {
   const { name, phone, email, password, confirmPass } = req.body;
@@ -82,7 +83,6 @@ const signin = async (req, res) => {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
-      // create a token
       const token = jwt.sign({ phone: existingUser.phone }, "Helloworldjklj");
       return res
         .status(201)
