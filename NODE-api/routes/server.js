@@ -80,6 +80,15 @@ app.post('/send-email', upload.array('files', 10), async (req, res) => {
     }
 });
 
+// Endpoint to serve the PDF file
+app.get ('/generate-pdf', async (req, res) => {
+    const pdfBuffer = await generatePDF();
+    res.setHeader('Content-Type', 'application/pdf');
+    res.send(pdfBuffer);
+
+})
+
+
 //generate PDF
 async function generatePDF() {
     const sampleData = {

@@ -1,0 +1,19 @@
+
+main
+
+mainCODE
+
+A, B
+
+
+
+git add .
+git commit -m "excel sheet upload functin complted"
+git pull origin  mainCODE
+git push origin A
+
+
+
+
+git branch C
+git checkout -b "C" B
