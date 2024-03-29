@@ -5,7 +5,7 @@ mainCODE
 
 A, B
 
-
+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G
 
 git add .
 git commit -m "excel sheet upload functin complted"
@@ -19,4 +19,3 @@ git branch C
 git checkout -b "C" B
 
 
-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
