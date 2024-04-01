@@ -114,7 +114,7 @@ async function generatePDF() {
 async function generateExcel(req) {
     const carinfo = req.params.carinfo;
 
-    const query = 'SELECT * FROM carinfo';
+    const query = 'SELECT * FROM carInfo';
 
     return new Promise((resolve, reject) => {
         db.query(query, (err, rows) => {
