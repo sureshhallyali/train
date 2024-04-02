@@ -9,8 +9,14 @@ A, B
 
 git add .
 git commit -m "excel sheet upload functin complted"
-git pull origin  mainCODE
-git push origin A
+git push origin  ruturaj_28
+
+
+git pull origin  ruturaj_28
+
+
+
+
 
 
 
