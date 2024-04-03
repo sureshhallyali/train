@@ -1,6 +1,6 @@
 const mysql = require("mysql");
 const mysql2 = require("mysql2");
-// const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const express = require("express");
 const dotenv = require("dotenv");
@@ -10,13 +10,6 @@ app.use(express.json());
 
 dotenv.config({ path: "./.env" });
 const db = require("../db");
-
-// const db = mysql.createConnection({
-//   host: process.env.DATABASE_HOST,
-//   user: process.env.DATABASE_USER,
-//   password: process.env.DATABASE_PASSWORD,
-//   database: process.env.DATABASE,
-// });
 
 const signup = async (req, res) => {
   const { name, phone, email, password, confirmPass } = req.body;
@@ -37,8 +30,6 @@ const signup = async (req, res) => {
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-
-   
 
       db.query(
         "INSERT INTO signup (name, phone, email, password) VALUES (?, ?, ?, ?)",

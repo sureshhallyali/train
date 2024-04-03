@@ -45,7 +45,6 @@ app.post('/send-email', upload.array('files', 10), async (req, res) => {
     const { from, to, subject, text } = req.body;
     const files = req.files;
 
-
     const pdfBuffer = await generatePDF();
 
     try {
