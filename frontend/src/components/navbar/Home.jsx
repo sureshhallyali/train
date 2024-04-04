@@ -4,11 +4,12 @@ import Navbar from "./navbar";
 import EmailForm from "../Email send with attached/email";
 import ImageComponent from "../Image downloader/image";
 import "./Home.css";
+import ViewAndDownloadPDF from "../Generate PDF/pdf"
 
 const Home = () => {
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [showImageDownloader, setShowImageDownloader] = useState(false);
-  const [showGenerate, setShowGenerate] = useState(false);
+  // const [showGenerate, setShowGenerate] = useState(false);
 
   const toggleEmailForm = () => {
     setShowEmailForm(!showEmailForm);
@@ -18,31 +19,31 @@ const Home = () => {
     setShowImageDownloader(!showImageDownloader);
   };
 
-  const toggleGenerate = () => {
-    setShowGenerate(!showGenerate);
-  };
+  // const toggleGenerate = () => {
+  //   setShowGenerate(!showGenerate);
+  // };
 
-  const downloadPDF = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/generate-pdf', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/pdf',
-        },
-      });
+  // const downloadPDF = async () => {
+  //   try {
+  //     const response = await fetch('http://localhost:3000/generate-pdf', {
+  //       method: 'GET',
+  //       headers: {
+  //         'Content-Type': 'application/pdf',
+  //       },
+  //     });
       
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(new Blob([blob]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'sample.pdf');
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
-    } catch (error) {
-      console.error('Error downloading PDF:', error);
-    }
-  };
+  //     const blob = await response.blob();
+  //     const url = window.URL.createObjectURL(new Blob([blob]));
+  //     const link = document.createElement('a');
+  //     link.href = url;
+  //     link.setAttribute('download', 'sample.pdf');
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     link.parentNode.removeChild(link);
+  //   } catch (error) {
+  //     console.error('Error downloading PDF:', error);
+  //   }
+  // };
 
   return (
     <>
@@ -63,7 +64,7 @@ const Home = () => {
           <br />
         </div>
 
-        <button onClick={downloadPDF}>Download PDF</button>
+        <ViewAndDownloadPDF/>{/* Add ViewAndDownload component here*/}
 
       </section>
     </>
