@@ -8,10 +8,10 @@ const {
   generatePDF,
   downloadImage,
   transporter,
+  generateExcel,
 } = require("../CustomFunction/CustomeFunction");
 
 const router = express.Router();
-
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -55,6 +55,7 @@ router.post("/send-email", upload.array("files", 10), async (req, res) => {
     await transporter.sendMail(mailOptions);
     res.json({ message: "Email sent successfully" });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: "Error sending email" });
   }
 });
@@ -82,4 +83,4 @@ router.post("/download", async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports=router;

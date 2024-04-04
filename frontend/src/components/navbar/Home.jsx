@@ -56,9 +56,9 @@ const Home = () => {
         {
           method: "POST",
           headers: {
-           "Content-Type": "application/json",
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(selectedColumn), 
+          body: JSON.stringify(selectedColumn),
         }
       );
 
@@ -75,18 +75,20 @@ const Home = () => {
     }
   };
 
-  const getCarInfoColumns = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/getCarInfoColumns");
-      const data = await response.json();
-      setCarInfoColumns(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const getCarInfoColumns = async () => {
+  //   try {
+  //     const response = await fetch("http://localhost:3000/getCarInfoColumns");
+  //     const data = await response.json();
+  //     setCarInfoColumns(data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+  const column = ["Brand", "Model", "Year"];
 
   useEffect(() => {
-    getCarInfoColumns();
+    setCarInfoColumns(column);
   }, []);
 
   const toggle = (e) => {
@@ -104,7 +106,6 @@ const Home = () => {
     });
   };
 
-  console.log(selectedColumn);
   return (
     <>
       <Navbar />
@@ -139,19 +140,20 @@ const Home = () => {
             Dropdown button
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-            {carInfoColumns.map((column, index) => 
-            column === "ID" ? null:(
-              <li key={index}>
-                <input
-                  type="checkbox"
-                  name={column}
-                  value={column}
-                  onChange={toggle}
-                  checked={Object.keys(selectedColumn).includes(column)}
-                />
-                {column}
-              </li>
-            ))}
+            {carInfoColumns.map((column, index) =>
+              column === "ID" ? null : (
+                <li key={index}>
+                  <input
+                    type="checkbox"
+                    name={column}
+                    value={column}
+                    onChange={toggle}
+                    checked={Object.keys(selectedColumn).includes(column)}
+                  />
+                  {column}
+                </li>
+              )
+            )}
           </ul>
         </div>
       </section>
@@ -159,4 +161,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Home;
