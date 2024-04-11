@@ -8,7 +8,7 @@ const ViewAndDownloadPDF = () => {
     if (!pdfUrl){
       try{
         setLoading(true);
-        const response = await fetch("http://localhost:3000/generate-pdf");
+        const response = await fetch("http://localhost:3000/user/generate-pdf");
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
         setPdfUrl(url)

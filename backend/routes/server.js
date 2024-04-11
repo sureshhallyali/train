@@ -5,18 +5,13 @@ const nodemailer = require("nodemailer");
 const ExcelJS = require("exceljs");
 const https = require("https");
 const fs = require("fs");
-const puppeteer = require("puppeteer");
+// const puppeteer = require("puppeteer");
 const db = require("../db");
 const path = require("path");
-
+// const pdfContent1 = require('./contents/pdf/pdfContent');
 const app = express();
 
 const PORT = process.env.PORT || 5000;
-
-
-console.log("*****************************************************************");
-console.log('__dirname:', __dirname);
-console.log("*****************************************************************");
 
 
 const storage = multer.diskStorage({
@@ -86,53 +81,53 @@ app.post("/send-email", upload.array("files", 10), async (req, res) => {
 });
 
 // Endpoint to serve the PDF file
-app.get("/generate-pdf", async (req, res) => {
-  try{
-    const pdfBuffer = await generatePDF();
-  res.setHeader("Content-Type", "application/pdf");
-  res.send(pdfBuffer);
-  }catch(error){
-    console.error('Error generating PDF:', error);
-    res.status(500).send('Failed to generate PDF');
-  }
-});
+// app.get("/generate-pdf", async (req, res) => {
+//   try{
+//     const pdfBuffer = await generatePDF();
+//   res.setHeader("Content-Type", "application/pdf");
+//   res.send(pdfBuffer);
+//   }catch(error){
+//     console.error('Error generating PDF:', error);
+//     res.status(500).send('Failed to generate PDF');
+//   }
+// });
 
 //generate PDF
-async function generatePDF() {
-try{
-// Read the contents of the HTML template file
-const htmlTemplate = fs.readFileSync('/home/deeps/Documents/Code-train/train/NODE-api/routes/myTemplate.html', 'utf8');
+// async function generatePDF() {
+// try{
+// // Read the contents of the HTML template file
+// // const htmlTemplate = fs.readFileSync('/home/deeps/Documents/Code-train/train/frontend/routes/contents/myTemplate.html', 'utf8');
 
 
-// Sample Data
-  const sampleData = {
-    title: "Sample PDF",
-    content: "This is a sample PDF generated.",
-  };
+// // Sample Data
+//   const sampleData = {
+//     title: "Sample PDF",
+//     content: "This is a sample PDF generated.",
+//   };
 
-  // Launching Puppeteer browser
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
+//   // Launching Puppeteer browser
+//   const browser = await puppeteer.launch();
+//   const page = await browser.newPage();
 
 
-  // Setting html content using template and sample data
-  await page.setContent(`
-        ${htmlTemplate}
-        <h1>${sampleData.title}</h1>
-        <p>${sampleData.content}</p>
-    `);
+//   // Setting html content using template and sample data
+//   await page.setContent(`
+//         <h1>${sampleData.title}</h1>
+//         <p>${sampleData.content}</p>
+//         <p> ${pdfContent1}</p>
+//     `);
 
-    // const generate pdf
-  const pdfBuffer = await page.pdf({ format: "A4" });
+//     // const generate pdf
+//   const pdfBuffer = await page.pdf({ format: "A4" });
 
-  // close browser
-  await browser.close();
+//   // close browser
+//   await browser.close();
 
-  return pdfBuffer;
-}catch(error){
-    console.error('Error generating PDF:', error);
-  }
-}
+//   return pdfBuffer;
+// }catch(error){
+//     console.error('Error generating PDF:', error);
+//   }
+// }
 
 //generate Excel
 async function generateExcel(req) {
